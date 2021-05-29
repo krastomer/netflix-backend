@@ -16,6 +16,7 @@ import (
 func LoginHandlers(e *echo.Group) {
 	e.POST("/register", registerHandler)
 	e.GET("", loginHandler)
+	// TODO: recoveryPassword
 }
 
 func registerHandler(c echo.Context) error {

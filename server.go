@@ -19,7 +19,7 @@ func main() {
 	address := os.Getenv("URL_PORT")
 	dsn := os.Getenv("DATABASE_URL")
 
-	database.Initialize(dsn)
+	go database.Initialize(dsn)
 
 	e := echo.New()
 	e.Use(middleware.LoggerWithConfig(loggerConfig))
