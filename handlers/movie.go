@@ -25,6 +25,5 @@ func getListMovieFromActorHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, lm)
 }
 
-// TODO: getListMovieFromActor
 // TODO: getMovieEpisode
 // TODO: getPosterMovie
