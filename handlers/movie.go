@@ -25,9 +25,5 @@ func getListMovieFromActorHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, lm)
 }
 
-// func getMovieEpisode(c echo.Context) error {
-// 	id, _ := strconv.Atoi(c.QueryParam("id"))
-// 	ep :=
-// }
 // TODO: getMovieEpisode
 // TODO: getPosterMovie

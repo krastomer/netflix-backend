@@ -9,9 +9,10 @@ import (
 )
 
 func PaymentHandlers(e *echo.Group) {
-
 	e.GET("", getPaymentHandler)
 	e.POST("", setPaymentHandler)
+	e.GET("/rebill", reBillingHandler)
+	e.DELETE("", cancelMemberShipHandler)
 }
 
 func getPaymentHandler(c echo.Context) error {
@@ -38,5 +39,37 @@ func setPaymentHandler(c echo.Context) error {
 	})
 }
 
-// TODO: reBillingHandler
-// TODO: cancelMemberShip <- using paymentMethod = NULL
+func reBillingHandler(c echo.Context) error {
+	u := getTokenUserEmail(c)
+	payment := database.GetUserPayment(u)
+	if payment.CardNumber == "" {
+		return paymentInvalidError
+	}
+
+	err := database.ReBillingPayment(&payment, u)
+	if err != nil {
+		return internalServerError
+	}
+
+	user := database.GetUserProfile(u)
+	defer database.SetReceiptPayment(user)
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"message":     "Re-Billing successed",
+		"next-blling": string(payment.NextBilling),
+	})
+}
+
+func cancelMemberShipHandler(c echo.Context) error {
+	u := getTokenUserEmail(c)
+	payment := database.GetUserPayment(u)
+	err := database.CancelMemberShip(payment)
+
+	if err != nil {
+		return internalServerError
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "Cancel Membership successed",
+	})
+}
