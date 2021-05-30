@@ -10,6 +10,7 @@ import (
 
 func MovieHandlers(e *echo.Group) {
 	e.GET("", getMovieDetailHandler)
+	e.GET("/actor", getListMovieFromActorHandler)
 }
 
 func getMovieDetailHandler(c echo.Context) error {
@@ -18,7 +19,12 @@ func getMovieDetailHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, md)
 }
 
-// TODO: getMovieDetail
+func getListMovieFromActorHandler(c echo.Context) error {
+	id, _ := strconv.Atoi(c.QueryParam("id"))
+	lm := database.GetListMovieFromActor(id)
+	return c.JSON(http.StatusOK, lm)
+}
+
 // TODO: getListMovieFromActor
 // TODO: getMovieEpisode
 // TODO: getPosterMovie
