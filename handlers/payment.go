@@ -6,11 +6,9 @@ import (
 	"github.com/krastomer/netflix-backend/database"
 	"github.com/krastomer/netflix-backend/models"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 func PaymentHandlers(e *echo.Group) {
-	e.Use(middleware.JWT([]byte(JWT_KEY)))
 
 	e.GET("", getPaymentHandler)
 	e.POST("", setPaymentHandler)

@@ -29,3 +29,10 @@ func SetUserPayment(payment models.UserPayment) error {
 	result := d.Where("email=?", payment.Email).Save(&payment)
 	return result.Error
 }
+
+func GetUserProfile(u string) models.UserProfile {
+	d := GetDB()
+	user := models.UserProfile{}
+	d.First(&user, "email=?", u)
+	return user
+}
