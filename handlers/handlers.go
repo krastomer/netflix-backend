@@ -21,6 +21,8 @@ var (
 	duplicateEmailError = echo.NewHTTPError(http.StatusBadRequest, "Email has registered")
 	paymentInvalidError = echo.NewHTTPError(http.StatusBadRequest, "Payment invalid")
 	userInacitveError   = echo.NewHTTPError(http.StatusUnauthorized, "User Inactive")
+	notfoundMovieError  = echo.NewHTTPError(http.StatusNotFound, "Not found movie or actor related id")
+	maxViewerError      = echo.NewHTTPError(http.StatusBadRequest, "Maximum User Viewer")
 )
 
 func SetHandlers(e *echo.Echo) {
@@ -35,6 +37,11 @@ func SetHandlers(e *echo.Echo) {
 	movieGroup.Use(middleware.JWT([]byte(JWT_KEY)))
 	movieGroup.Use(userActiveMiddleware)
 	MovieHandlers(movieGroup)
+
+	viewerGroup := e.Group("/viewer")
+	viewerGroup.Use(middleware.JWT([]byte(JWT_KEY)))
+	viewerGroup.Use(userActiveMiddleware)
+	ViewerHandlers(viewerGroup)
 }
 
 func getTokenUserEmail(c echo.Context) string {

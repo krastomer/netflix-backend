@@ -16,12 +16,18 @@ func MovieHandlers(e *echo.Group) {
 func getMovieDetailHandler(c echo.Context) error {
 	id, _ := strconv.Atoi(c.QueryParam("id"))
 	md := database.GetMovieDetail(id)
+	if md.Name == "" {
+		return notfoundMovieError
+	}
 	return c.JSON(http.StatusOK, md)
 }
 
 func getListMovieFromActorHandler(c echo.Context) error {
 	id, _ := strconv.Atoi(c.QueryParam("id"))
 	lm := database.GetListMovieFromActor(id)
+	if lm.Name == "" {
+		return notfoundMovieError
+	}
 	return c.JSON(http.StatusOK, lm)
 }
 

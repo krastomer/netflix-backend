@@ -1,14 +1,26 @@
 package database
 
 import (
+	"errors"
 	"sync"
 	"time"
 
 	"github.com/krastomer/netflix-backend/models"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 var wg sync.WaitGroup
+var errMaxViewer = errors.New("maximum size viewer")
+
+const (
+	emptyViewer   = 0
+	maximumViewer = 5
+)
+
+func GetMaxViewerError() error {
+	return errMaxViewer
+}
 
 func AddUser(u models.User) error {
 	d := GetDB()
@@ -133,7 +145,7 @@ func ReBillingPayment(payment *models.UserPayment, u string) error {
 
 func SetReceiptPayment(u models.UserProfile) error {
 	d := GetDB()
-	bill := models.UserBilling{BillingDate: time.Now(), IDAccount: u.IDAccount}
+	bill := models.UserBilling{BillingDate: time.Now().Local(), IDAccount: u.IDAccount}
 	result := d.Create(&bill)
 	return result.Error
 }
@@ -149,5 +161,43 @@ func CancelMemberShip(u models.UserPayment) error {
 			"exp_date":      gorm.Expr("NULL"),
 			"security_code": gorm.Expr("NULL"),
 		})
+	return result.Error
+}
+
+func getSizeViewer(u string) int {
+	d := GetDB()
+	var size int
+	row := d.Raw("SELECT COUNT(id_viewer) FROM `viewer` WHERE id_account = (SELECT id_account FROM user WHERE email = ?) ", u).Row()
+	row.Scan(&size)
+	return size
+}
+
+func GetListViewer(u string) []models.Viewer {
+	d := GetDB()
+	if getSizeViewer(u) == emptyViewer {
+		CreateViewer(u, models.Viewer{Name: "You"})
+	}
+	listViewer := []models.Viewer{}
+	viewersRows, _ := d.Raw("SELECT viewer.id_viewer,viewer.id_account,  viewer.name ,viewer.pin_number,viewer.is_kid FROM viewer JOIN user ON viewer.id_account = user.id_account WHERE user.email = ?", u).Rows()
+	for viewersRows.Next() {
+		viewer := models.Viewer{}
+		viewersRows.Scan(&viewer.IDViewer, &viewer.IDAccount, &viewer.Name, &viewer.PinNumber, &viewer.IsKid)
+		listViewer = append(listViewer, viewer)
+	}
+	return listViewer
+}
+
+func CreateViewer(u string, v models.Viewer) error {
+	d := GetDB()
+	if getSizeViewer(u) == maximumViewer {
+		return errMaxViewer
+	}
+	var pinNumber clause.Expr
+	if v.PinNumber == "" {
+		pinNumber = gorm.Expr("Null")
+	} else {
+		pinNumber = gorm.Expr(v.PinNumber)
+	}
+	result := d.Exec("INSERT INTO viewer(id_account, pin_number, name, is_kid) VALUES((SELECT id_account FROM user WHERE email=?), ?, ?, ?)", u, pinNumber, v.Name, v.IsKid)
 	return result.Error
 }
