@@ -2,16 +2,20 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
+	"github.com/krastomer/netflix-backend/database"
 	"github.com/labstack/echo/v4"
 )
 
 func MovieHandlers(e *echo.Group) {
-	e.GET("", getMovieDetail)
+	e.GET("", getMovieDetailHandler)
 }
 
-func getMovieDetail(c echo.Context) error {
-	return c.String(http.StatusOK, "test")
+func getMovieDetailHandler(c echo.Context) error {
+	id, _ := strconv.Atoi(c.QueryParam("id"))
+	md := database.GetMovieDetail(id)
+	return c.JSON(http.StatusOK, md)
 }
 
 // TODO: getMovieDetail
