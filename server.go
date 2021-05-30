@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -16,8 +17,11 @@ var loggerConfig = middleware.LoggerConfig{
 
 func main() {
 	godotenv.Load(".env")
-	address := os.Getenv("URL_PORT")
+	url := os.Getenv("URL")
+	port := os.Getenv("PORT")
 	dsn := os.Getenv("DATABASE_URL")
+
+	address := fmt.Sprintf("%s:%s", url, port)
 
 	go database.Initialize(dsn)
 
