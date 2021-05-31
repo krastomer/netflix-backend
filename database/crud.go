@@ -42,7 +42,6 @@ func GetUser(u string) models.User {
 	return user
 }
 
-// TODO: NextBilling invalid data type
 func GetUserPayment(u string) models.UserPayment {
 	d := GetDB()
 	payment := models.UserPayment{}
@@ -220,4 +219,12 @@ func DeleteViewer(b models.BodyViewer) error {
 		}
 	}
 	return errNotFoundViewer
+}
+
+func GetPosterMovie(id int) (string, error) {
+	d := GetDB()
+	var poster string
+	row := d.Raw("select poster from movie_and_series where id_movie=?", id).Row()
+	row.Scan(&poster)
+	return poster, row.Err()
 }

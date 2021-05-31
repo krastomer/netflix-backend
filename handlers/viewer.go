@@ -60,4 +60,6 @@ func deleteViewerHandler(c echo.Context) error {
 
 }
 
-// TODO: updateViewer
+// func updateViewerHandler(c echo.Context) error {
+// 	u := getTokenUserEmail()
+// }

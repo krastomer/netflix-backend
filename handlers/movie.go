@@ -11,6 +11,7 @@ import (
 func MovieHandlers(e *echo.Group) {
 	e.GET("", getMovieDetailHandler)
 	e.GET("/actor", getListMovieFromActorHandler)
+	e.GET("/poster", getPosterMovieHandler)
 }
 
 func getMovieDetailHandler(c echo.Context) error {
@@ -31,5 +32,16 @@ func getListMovieFromActorHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, lm)
 }
 
+func getPosterMovieHandler(c echo.Context) error {
+	id, _ := strconv.Atoi(c.QueryParam("id"))
+	if id == 0 {
+		return notFoundMovieError
+	}
+	link, err := database.GetPosterMovie(id)
+	if err != nil {
+		return err
+	}
+	return c.Redirect(http.StatusMovedPermanently, link)
+}
+
 // TODO: getMovieEpisode
-// TODO: getPosterMovie

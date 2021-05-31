@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/krastomer/netflix-backend/database"
 	"github.com/krastomer/netflix-backend/models"
@@ -18,7 +19,17 @@ func PaymentHandlers(e *echo.Group) {
 func getPaymentHandler(c echo.Context) error {
 	u := getTokenUserEmail(c)
 	payment := database.GetUserPayment(u)
-	return c.JSON(http.StatusOK, payment)
+	return c.JSON(http.StatusOK, map[string]string{
+		"email":        payment.Email,
+		"firstname":    payment.Firstname,
+		"lastname":     payment.Lastname,
+		"card_number":  payment.CardNumber,
+		"exp_date":     payment.ExpDate,
+		"cvc_code":     payment.SecurityCode,
+		"next_billing": string(payment.NextBilling),
+		"plan_id":      strconv.Itoa(payment.PlanId),
+		"phone_number": payment.PhoneNumber,
+	})
 }
 
 func setPaymentHandler(c echo.Context) error {
