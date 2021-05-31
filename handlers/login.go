@@ -15,7 +15,7 @@ import (
 
 func LoginHandlers(e *echo.Group) {
 	e.POST("/register", registerHandler)
-	e.GET("", loginHandler)
+	e.POST("", loginHandler)
 	// TODO: recoveryPassword
 }
 

@@ -11,8 +11,10 @@ import (
 )
 
 var wg sync.WaitGroup
-var errMaxViewer = errors.New("maximum size viewer")
-var errNotFoundViewer = errors.New("not found viewer")
+var (
+	errMaxViewer      = errors.New("maximum size viewer")
+	errNotFoundViewer = errors.New("not found viewer")
+)
 
 const (
 	emptyViewer   = 0
@@ -40,6 +42,7 @@ func GetUser(u string) models.User {
 	return user
 }
 
+// TODO: NextBilling invalid data type
 func GetUserPayment(u string) models.UserPayment {
 	d := GetDB()
 	payment := models.UserPayment{}
