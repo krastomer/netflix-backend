@@ -21,8 +21,9 @@ var (
 	duplicateEmailError = echo.NewHTTPError(http.StatusBadRequest, "Email has registered")
 	paymentInvalidError = echo.NewHTTPError(http.StatusBadRequest, "Payment invalid")
 	userInacitveError   = echo.NewHTTPError(http.StatusUnauthorized, "User Inactive")
-	notfoundMovieError  = echo.NewHTTPError(http.StatusNotFound, "Not found movie or actor related id")
+	notFoundMovieError  = echo.NewHTTPError(http.StatusNotFound, "Not found movie or actor related id")
 	maxViewerError      = echo.NewHTTPError(http.StatusBadRequest, "Maximum User Viewer")
+	notFoundViewerError = echo.NewHTTPError(http.StatusNotFound, "Not found viewer")
 )
 
 func SetHandlers(e *echo.Echo) {

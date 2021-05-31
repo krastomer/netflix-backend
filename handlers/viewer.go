@@ -12,6 +12,7 @@ import (
 func ViewerHandlers(e *echo.Group) {
 	e.GET("", getListViewerHandler)
 	e.POST("", createViewerHandler)
+	e.DELETE("", deleteViewerHandler)
 }
 
 func getListViewerHandler(c echo.Context) error {
@@ -38,5 +39,25 @@ func createViewerHandler(c echo.Context) error {
 	})
 }
 
-// TODO: deleteViewer
+func deleteViewerHandler(c echo.Context) error {
+	u := getTokenUserEmail(c)
+
+	viewer := models.BodyViewer{Email: u}
+	if err := c.Bind(&viewer); err != nil {
+		return err
+	}
+	err := database.DeleteViewer(viewer)
+	if err != nil {
+		if errors.Is(err, database.GetNotFoundViewerError()) {
+			return notFoundViewerError
+		}
+		return err
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "Delete Viewer successed",
+	})
+
+}
+
 // TODO: updateViewer

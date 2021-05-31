@@ -12,6 +12,7 @@ import (
 
 var wg sync.WaitGroup
 var errMaxViewer = errors.New("maximum size viewer")
+var errNotFoundViewer = errors.New("not found viewer")
 
 const (
 	emptyViewer   = 0
@@ -20,6 +21,10 @@ const (
 
 func GetMaxViewerError() error {
 	return errMaxViewer
+}
+
+func GetNotFoundViewerError() error {
+	return errNotFoundViewer
 }
 
 func AddUser(u models.User) error {
@@ -200,4 +205,16 @@ func CreateViewer(u string, v models.Viewer) error {
 	}
 	result := d.Exec("INSERT INTO viewer(id_account, pin_number, name, is_kid) VALUES((SELECT id_account FROM user WHERE email=?), ?, ?, ?)", u, pinNumber, v.Name, v.IsKid)
 	return result.Error
+}
+
+func DeleteViewer(b models.BodyViewer) error {
+	d := GetDB()
+	viewers := GetListViewer(b.Email)
+	for _, viewer := range viewers {
+		if viewer.IDViewer == b.IDViewer {
+			result := d.Where("id_viewer=?", b.IDViewer).Delete(&models.BodyViewer{})
+			return result.Error
+		}
+	}
+	return errNotFoundViewer
 }

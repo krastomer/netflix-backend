@@ -7,3 +7,12 @@ type Viewer struct {
 	PinNumber string `json:"pin_number"`
 	IsKid     bool   `json:"is_kid"`
 }
+
+type BodyViewer struct {
+	IDViewer int `json:"id_viewer"`
+	Email    string
+}
+
+func (BodyViewer) TableName() string {
+	return "viewer"
+}
