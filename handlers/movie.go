@@ -16,7 +16,8 @@ func MovieHandlers(e *echo.Group) {
 
 func getMovieDetailHandler(c echo.Context) error {
 	id, _ := strconv.Atoi(c.QueryParam("id"))
-	md := database.GetMovieDetail(id)
+	_, v := getUserFromToken(c)
+	md := database.GetMovieDetail(id, v)
 	if md.Name == "" {
 		return notFoundMovieError
 	}

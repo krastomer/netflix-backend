@@ -11,6 +11,7 @@ type MovieDetail struct {
 	Description  string   `json:"description"`
 	NumberSeason int      `json:"no_ss"`
 	IsSeries     bool     `json:"is_series"`
+	MyList       bool     `json:"my_list"`
 }
 
 // use for directorList actorList generesList browseList

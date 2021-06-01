@@ -70,14 +70,15 @@ func GetUserProfile(u string) models.UserProfile {
 	return user
 }
 
-func GetMovieDetail(id int) models.MovieDetail {
+func GetMovieDetail(id int, v int) models.MovieDetail {
 	d := GetDB()
 	m := models.MovieDetail{}
-	wg.Add(4)
+	wg.Add(5)
 	go getActorList(d, id, &m)
 	go getDirectorList(d, id, &m)
 	go getGenresList(d, id, &m)
 	go getDetailList(d, id, &m)
+	go getMovieMyList(d, id, v, &m)
 	wg.Wait()
 	return m
 }
@@ -142,6 +143,14 @@ func GetListMovieFromActor(id int) models.MovieList {
 	}(GetDB(), id)
 	wg.Wait()
 	return ml
+}
+
+func getMovieMyList(d *gorm.DB, id_movie int, id_viwer int, md *models.MovieDetail) {
+	defer wg.Done()
+	var data int
+	row := d.Raw("SELECT my_list.id_viewer FROM `my_list` JOIN viewer on my_list.id_viewer = viewer.id_viewer WHERE my_list.id_movie = ? AND viewer.id_viewer = ?", id_movie, id_viwer).Row()
+	row.Scan(&data)
+	md.MyList = data != 0
 }
 
 func ReBillingPayment(payment *models.UserPayment, u string) error {

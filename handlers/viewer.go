@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/krastomer/netflix-backend/database"
 	"github.com/krastomer/netflix-backend/models"
@@ -13,6 +14,7 @@ func ViewerHandlers(e *echo.Group) {
 	e.GET("", getListViewerHandler)
 	e.POST("", createViewerHandler)
 	e.DELETE("", deleteViewerHandler)
+	e.GET("/token", getTokenViewerHandler)
 }
 
 func getListViewerHandler(c echo.Context) error {
@@ -60,6 +62,9 @@ func deleteViewerHandler(c echo.Context) error {
 
 }
 
-// func updateViewerHandler(c echo.Context) error {
-// 	u := getTokenUserEmail()
-// }
+func getTokenViewerHandler(c echo.Context) error {
+	u, _ := getUserFromToken(c)
+	id, _ := strconv.Atoi(c.QueryParam("id"))
+
+	return tokenJSON(c, u, id)
+}
