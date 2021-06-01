@@ -43,6 +43,11 @@ func SetHandlers(e *echo.Echo) {
 	viewerGroup.Use(middleware.JWT([]byte(JWT_KEY)))
 	viewerGroup.Use(userActiveMiddleware)
 	ViewerHandlers(viewerGroup)
+
+	browseGroup := e.Group("/browse")
+	browseGroup.Use(middleware.JWT([]byte(JWT_KEY)))
+	browseGroup.Use(userActiveMiddleware)
+	BrowseHandlers(browseGroup)
 }
 
 func getUserFromToken(c echo.Context) (string, int) {

@@ -123,6 +123,14 @@ func getDetailList(d *gorm.DB, s int, m *models.MovieDetail) {
 	row.Scan(&m.ID, &m.Name, &m.IsSeries, &m.Year, &m.Rate, &m.Description, &m.NumberSeason)
 }
 
+func getMovieMyList(d *gorm.DB, id_movie int, id_viwer int, md *models.MovieDetail) {
+	defer wg.Done()
+	var data int
+	row := d.Raw("SELECT my_list.id_viewer FROM `my_list` JOIN viewer on my_list.id_viewer = viewer.id_viewer WHERE my_list.id_movie = ? AND viewer.id_viewer = ?", id_movie, id_viwer).Row()
+	row.Scan(&data)
+	md.MyList = data != 0
+}
+
 func GetListMovieFromActor(id int) models.MovieList {
 	ml := models.MovieList{ID: id}
 	wg.Add(2)
@@ -143,14 +151,6 @@ func GetListMovieFromActor(id int) models.MovieList {
 	}(GetDB(), id)
 	wg.Wait()
 	return ml
-}
-
-func getMovieMyList(d *gorm.DB, id_movie int, id_viwer int, md *models.MovieDetail) {
-	defer wg.Done()
-	var data int
-	row := d.Raw("SELECT my_list.id_viewer FROM `my_list` JOIN viewer on my_list.id_viewer = viewer.id_viewer WHERE my_list.id_movie = ? AND viewer.id_viewer = ?", id_movie, id_viwer).Row()
-	row.Scan(&data)
-	md.MyList = data != 0
 }
 
 func ReBillingPayment(payment *models.UserPayment, u string) error {
@@ -236,4 +236,16 @@ func GetPosterMovie(id int) (string, error) {
 	row := d.Raw("select poster from movie_and_series where id_movie=?", id).Row()
 	row.Scan(&poster)
 	return poster, row.Err()
+}
+
+func GetMyList(id_viewer int) []models.PeoplePoster {
+	d := GetDB()
+	listMovie := []models.PeoplePoster{}
+	myListRows, _ := d.Raw("SELECT `movie_and_series`.`id_movie`, `movie_and_series`.`name`, `movie_and_series`.`poster` FROM `my_list` JOIN `movie_and_series` ON `my_list`.`id_movie` = movie_and_series.id_movie WHERE `my_list`.`id_viewer` = ?", id_viewer).Rows()
+	for myListRows.Next() {
+		movie := models.PeoplePoster{}
+		myListRows.Scan(&movie.ID, &movie.Name, &movie.PosterURL)
+		listMovie = append(listMovie, movie)
+	}
+	return listMovie
 }
