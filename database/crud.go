@@ -249,3 +249,15 @@ func GetMyList(id_viewer int) []models.PeoplePoster {
 	}
 	return listMovie
 }
+
+func AddMyListMovie(id_viewer, id_movie int) int64 {
+	d := GetDB()
+	err := d.Exec("INSERT INTO `my_list` (`id_movie`, `id_viewer`) VALUES (?, ?)", id_movie, id_viewer)
+	return err.RowsAffected
+}
+
+func RemoveMyListMovie(id_viewer, id_movie int) int64 {
+	d := GetDB()
+	err := d.Exec("DELETE FROM `my_list` WHERE `my_list`.`id_movie` = ? AND `my_list`.`id_viewer` = ?", id_movie, id_viewer)
+	return err.RowsAffected
+}

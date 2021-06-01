@@ -24,6 +24,7 @@ var (
 	notFoundMovieError  = echo.NewHTTPError(http.StatusNotFound, "Not found movie or actor related id")
 	maxViewerError      = echo.NewHTTPError(http.StatusBadRequest, "Maximum User Viewer")
 	notFoundViewerError = echo.NewHTTPError(http.StatusNotFound, "Not found viewer")
+	notMyListError      = echo.NewHTTPError(http.StatusBadRequest, "This movie has add or remove to MyList")
 )
 
 func SetHandlers(e *echo.Echo) {
