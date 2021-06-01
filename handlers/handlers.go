@@ -45,11 +45,12 @@ func SetHandlers(e *echo.Echo) {
 	ViewerHandlers(viewerGroup)
 }
 
-func getTokenUserEmail(c echo.Context) string {
+func getUserFromToken(c echo.Context) (string, int) {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["username"].(string)
-	return name
+	viewer := claims["viewer"].(float64)
+	return name, int(viewer)
 }
 
 func userActiveMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -63,7 +64,8 @@ func userActiveMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func getUserActive(c echo.Context) bool {
-	u := database.GetUserProfile(getTokenUserEmail(c))
+	name, _ := getUserFromToken(c)
+	u := database.GetUserProfile(name)
 	t, _ := time.Parse("2006-01-02", string(u.NextBilling))
 	return t.Unix() >= time.Now().Unix()
 }

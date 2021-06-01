@@ -39,7 +39,7 @@ func registerHandler(c echo.Context) error {
 		return internalServerError
 	}
 
-	return tokenJSON(c, u.Email)
+	return tokenJSON(c, u.Email, -1)
 }
 
 func loginHandler(c echo.Context) error {
@@ -55,7 +55,7 @@ func loginHandler(c echo.Context) error {
 		return incorrectEmailError
 	}
 
-	return tokenJSON(c, u.Email)
+	return tokenJSON(c, u.Email, -1)
 }
 
 func checkEmailPassword(u models.User) bool {
@@ -68,19 +68,20 @@ func hashPassword(p string) string {
 	return string(h)
 }
 
-func generateToken(u string) (string, error) {
+func generateToken(u string, v int) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = u
 	claims["exp"] = time.Now().Add(time.Hour * EXP_KEY).Unix()
+	claims["viewer"] = v
 
 	t, err := token.SignedString([]byte(JWT_KEY))
 	return t, err
 }
 
-func tokenJSON(c echo.Context, s string) error {
-	t, err := generateToken(s)
+func tokenJSON(c echo.Context, s string, v int) error {
+	t, err := generateToken(s, v)
 	if err != nil {
 		return internalServerError
 	}

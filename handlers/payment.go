@@ -17,7 +17,7 @@ func PaymentHandlers(e *echo.Group) {
 }
 
 func getPaymentHandler(c echo.Context) error {
-	u := getTokenUserEmail(c)
+	u, _ := getUserFromToken(c)
 	payment := database.GetUserPayment(u)
 	return c.JSON(http.StatusOK, map[string]string{
 		"email":        payment.Email,
@@ -33,7 +33,7 @@ func getPaymentHandler(c echo.Context) error {
 }
 
 func setPaymentHandler(c echo.Context) error {
-	u := getTokenUserEmail(c)
+	u, _ := getUserFromToken(c)
 	payment := models.UserPayment{Email: u}
 	if err := c.Bind(&payment); err != nil {
 		return err
@@ -51,7 +51,7 @@ func setPaymentHandler(c echo.Context) error {
 }
 
 func reBillingHandler(c echo.Context) error {
-	u := getTokenUserEmail(c)
+	u, _ := getUserFromToken(c)
 	payment := database.GetUserPayment(u)
 	if payment.CardNumber == "" {
 		return paymentInvalidError
@@ -72,7 +72,7 @@ func reBillingHandler(c echo.Context) error {
 }
 
 func cancelMemberShipHandler(c echo.Context) error {
-	u := getTokenUserEmail(c)
+	u, _ := getUserFromToken(c)
 	payment := database.GetUserPayment(u)
 	err := database.CancelMemberShip(payment)
 

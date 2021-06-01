@@ -16,13 +16,13 @@ func ViewerHandlers(e *echo.Group) {
 }
 
 func getListViewerHandler(c echo.Context) error {
-	u := getTokenUserEmail(c)
+	u, _ := getUserFromToken(c)
 	listViewer := database.GetListViewer(u)
 	return c.JSON(http.StatusOK, listViewer)
 }
 
 func createViewerHandler(c echo.Context) error {
-	u := getTokenUserEmail(c)
+	u, _ := getUserFromToken(c)
 	viewer := models.Viewer{}
 	if err := c.Bind(&viewer); err != nil {
 		return err
@@ -40,7 +40,7 @@ func createViewerHandler(c echo.Context) error {
 }
 
 func deleteViewerHandler(c echo.Context) error {
-	u := getTokenUserEmail(c)
+	u, _ := getUserFromToken(c)
 
 	viewer := models.BodyViewer{Email: u}
 	if err := c.Bind(&viewer); err != nil {
