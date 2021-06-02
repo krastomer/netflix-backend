@@ -297,3 +297,20 @@ func getEpisodeHistory(d *gorm.DB, id_viewer int, id_movie int, m *models.MovieH
 	row := d.Raw("SELECT history.id_history, history.id_episode, history.stop_time FROM `history` JOIN episode ON episode.id_episode = history.id_episode JOIN season ON season.id_season = episode.id_season JOIN movie_and_series ON movie_and_series.id_movie = season.id_movie WHERE history.id_viewer = ? and movie_and_series.id_movie = ? ORDER BY history.id_history DESC LIMIT 1 ", id_viewer, id_movie).Row()
 	row.Scan(&m.IDHistory, &m.IDEpisode, &m.StopTime)
 }
+
+func GetTop10Movie() []models.MovieSeq {
+	d := GetDB()
+	listMovie := []models.MovieSeq{}
+	stop_time := time.Now()
+	start_time := stop_time.AddDate(0, 0, -7)
+	rows, _ := d.Raw("SELECT movie_and_series.id_movie ,movie_and_series.name, COUNT(movie_and_series.id_movie) AS n_views, movie_and_series.poster FROM `history` JOIN `episode` ON history.id_episode = episode.id_episode JOIN `season` ON episode.id_season = season.id_season JOIN `movie_and_series` ON season.id_movie = movie_and_series.id_movie WHERE history.date > ? and history.date < ? GROUP BY movie_and_series.id_movie ORDER BY n_views DESC LIMIT 10", start_time, stop_time).Rows()
+	count := 1
+	for rows.Next() {
+		movie := models.MovieSeq{}
+		rows.Scan(&movie.IDMovie, &movie.Name, &movie.NViews, &movie.PosterURL)
+		movie.Seq = count
+		listMovie = append(listMovie, movie)
+		count = count + 1
+	}
+	return listMovie
+}
