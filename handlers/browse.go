@@ -45,4 +45,5 @@ func getTVShowsBrowseHandler(c echo.Context) error {
 	return c.String(http.StatusOK, "")
 }
 
-// TODO: getHistory
+// TODO: getMovieBrowseHandler
+// TODO: getTVShowsBrowseHandler

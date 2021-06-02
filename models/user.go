@@ -31,7 +31,7 @@ type UserBilling struct {
 }
 
 func (u *UserPayment) DataInvalid() bool {
-	// TODO: check ExpDate correct
+	// EXTRA_TODO: check ExpDate correct
 	return len(u.CardNumber) != 16 ||
 		len(u.ExpDate) != 5 ||
 		u.PlanId < 1 ||

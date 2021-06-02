@@ -19,3 +19,11 @@ type MovieSeq struct {
 	PosterURL string `json:"poster_url"`
 	NViews    int    `json:"n_views"`
 }
+
+type MovieEpisode struct {
+	IDEpisode   int    `json:"id_episode"`
+	Name        string `json:"name"`
+	NoEpisode   int    `json:"no_episode"`
+	Description string `json:"description"`
+	IDSeason    int    `json:"id_season"`
+}

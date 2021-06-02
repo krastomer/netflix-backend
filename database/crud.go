@@ -314,3 +314,15 @@ func GetTop10Movie() []models.MovieSeq {
 	}
 	return listMovie
 }
+
+func GetMovieEpisode(id_movie int) []models.MovieEpisode {
+	d := GetDB()
+	listEpisode := []models.MovieEpisode{}
+	rows, _ := d.Raw("SELECT episode.id_episode, episode.episode_name, episode.no_episode, episode.description, episode.id_season FROM `episode` JOIN `season` ON `episode`.`id_season` = `season`.`id_season` JOIN `movie_and_series` ON `movie_and_series`.`id_movie` = `season`.`id_movie` WHERE movie_and_series.id_movie = ? ", id_movie).Rows()
+	for rows.Next() {
+		episode := models.MovieEpisode{}
+		rows.Scan(&episode.IDEpisode, &episode.Name, &episode.NoEpisode, &episode.Description, &episode.IDSeason)
+		listEpisode = append(listEpisode, episode)
+	}
+	return listEpisode
+}

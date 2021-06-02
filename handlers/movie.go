@@ -14,6 +14,7 @@ func MovieHandlers(e *echo.Group) {
 	e.GET("/poster", getPosterMovieHandler)
 	e.POST("", addMyListMovieHandler)
 	e.DELETE("", removeMyListMovieHandler)
+	e.GET("/episode", getMovieEpisodeHandler)
 }
 
 func getMovieDetailHandler(c echo.Context) error {
@@ -75,6 +76,15 @@ func removeMyListMovieHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{
 		"message": "Remove MyList id_movie: " + strconv.Itoa(id) + " successed",
 	})
+}
+
+func getMovieEpisodeHandler(c echo.Context) error {
+	id, _ := strconv.Atoi(c.QueryParam("id"))
+	if id == 0 {
+		return notFoundMovieError
+	}
+	listEpisode := database.GetMovieEpisode(id)
+	return c.JSON(http.StatusOK, listEpisode)
 }
 
 // TODO: getMovieEpisode
