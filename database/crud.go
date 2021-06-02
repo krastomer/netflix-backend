@@ -73,12 +73,13 @@ func GetUserProfile(u string) models.UserProfile {
 func GetMovieDetail(id int, v int) models.MovieDetail {
 	d := GetDB()
 	m := models.MovieDetail{}
-	wg.Add(5)
+	wg.Add(6)
 	go getActorList(d, id, &m)
 	go getDirectorList(d, id, &m)
 	go getGenresList(d, id, &m)
 	go getDetailList(d, id, &m)
 	go getMovieMyList(d, id, v, &m)
+	go getPosterMovie(d, id, &m)
 	wg.Wait()
 	return m
 }
@@ -129,6 +130,12 @@ func getMovieMyList(d *gorm.DB, id_movie int, id_viwer int, md *models.MovieDeta
 	row := d.Raw("SELECT my_list.id_viewer FROM `my_list` JOIN viewer on my_list.id_viewer = viewer.id_viewer WHERE my_list.id_movie = ? AND viewer.id_viewer = ?", id_movie, id_viwer).Row()
 	row.Scan(&data)
 	md.MyList = data != 0
+}
+
+func getPosterMovie(d *gorm.DB, s int, m *models.MovieDetail) {
+	defer wg.Done()
+	row := d.Raw("select poster from movie_and_series where id_movie=?", s).Row()
+	row.Scan(&m.PosterURL)
 }
 
 func GetListMovieFromActor(id int) models.MovieList {
@@ -260,4 +267,33 @@ func RemoveMyListMovie(id_viewer, id_movie int) int64 {
 	d := GetDB()
 	err := d.Exec("DELETE FROM `my_list` WHERE `my_list`.`id_movie` = ? AND `my_list`.`id_viewer` = ?", id_movie, id_viewer)
 	return err.RowsAffected
+}
+
+func GetHistoryMovie(id_viewer int) []models.MovieHistory {
+	d := GetDB()
+	listMovie := getHistoryMovieList(d, id_viewer)
+	sizeListMovie := len(listMovie)
+	wg.Add(sizeListMovie)
+	for i := 0; i < sizeListMovie; i++ {
+		go getEpisodeHistory(d, id_viewer, listMovie[i].IDMovie, &listMovie[i])
+	}
+	wg.Wait()
+	return listMovie
+}
+
+func getHistoryMovieList(d *gorm.DB, id_viewer int) []models.MovieHistory {
+	mh := []models.MovieHistory{}
+	listMovieRows, _ := d.Raw("SELECT DISTINCT movie_and_series.id_movie, movie_and_series.name, movie_and_series.rate, season.year, movie_and_series.is_series, movie_and_series.poster FROM `history` JOIN episode ON episode.id_episode = history.id_episode JOIN season ON season.id_season = episode.id_season JOIN movie_and_series ON movie_and_series.id_movie = season.id_movie WHERE history.id_viewer = ? ORDER BY history.id_history DESC LIMIT 15", id_viewer).Rows()
+	for listMovieRows.Next() {
+		movie := models.MovieHistory{}
+		listMovieRows.Scan(&movie.IDMovie, &movie.Name, &movie.Rate, &movie.Year, &movie.IsSeries, &movie.PosterURL)
+		mh = append(mh, movie)
+	}
+	return mh
+}
+
+func getEpisodeHistory(d *gorm.DB, id_viewer int, id_movie int, m *models.MovieHistory) {
+	defer wg.Done()
+	row := d.Raw("SELECT history.id_history, history.id_episode, history.stop_time FROM `history` JOIN episode ON episode.id_episode = history.id_episode JOIN season ON season.id_season = episode.id_season JOIN movie_and_series ON movie_and_series.id_movie = season.id_movie WHERE history.id_viewer = ? and movie_and_series.id_movie = ? ORDER BY history.id_history DESC LIMIT 1 ", id_viewer, id_movie).Row()
+	row.Scan(&m.IDHistory, &m.IDEpisode, &m.StopTime)
 }

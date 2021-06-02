@@ -78,3 +78,4 @@ func removeMyListMovieHandler(c echo.Context) error {
 }
 
 // TODO: getMovieEpisode
+// TODO: addHistory
