@@ -29,6 +29,10 @@ var (
 )
 
 func SetHandlers(e *echo.Echo) {
+
+	e.File("/favicon.ico", "images/favicon.ico")
+	e.GET("", homePage)
+
 	loginGroup := e.Group("/login")
 	LoginHandlers(loginGroup)
 
@@ -75,4 +79,8 @@ func getUserActive(c echo.Context) bool {
 	u := database.GetUserProfile(name)
 	t, _ := time.Parse("2006-01-02", string(u.NextBilling))
 	return t.Unix() >= time.Now().Unix()
+}
+
+func homePage(c echo.Context) error {
+	return c.File("public/index.html")
 }

@@ -332,3 +332,25 @@ func SetEpisodeHistory(id_episode, id_viewer int, stop_time string) int64 {
 	err := d.Exec("INSERT INTO `history` ( `id_viewer`, `id_episode`,`stop_time`) VALUES (?, ?, ?)", id_viewer, id_episode, stop_time)
 	return err.RowsAffected
 }
+
+func CheckKidsUser(id_viewer int) bool {
+	d := GetDB()
+	var is_kid int
+	row := d.Raw("SELECT is_kid FROM `viewer` WHERE id_viewer = ?", id_viewer).Row()
+	row.Scan(&is_kid)
+	return is_kid == 1
+}
+
+func GetGenresMovie(id_genres int) []models.PeoplePoster {
+	d := GetDB()
+	listMovie := []models.PeoplePoster{}
+	rows, _ := d.Raw("SELECT movie_and_series.id_movie, movie_and_series.name, movie_and_series.poster FROM `genres` JOIN `genres_movie` ON `genres_movie`.`id_genres` = `genres`.`id_genres` JOIN `movie_and_series` ON `movie_and_series`.`id_movie` = `genres_movie`.`id_movie` WHERE genres.id_genres = ? ", id_genres).Rows()
+	for rows.Next() {
+		movie := models.PeoplePoster{}
+		rows.Scan(&movie.ID, &movie.Name, &movie.PosterURL)
+		listMovie = append(listMovie, movie)
+	}
+	return listMovie
+}
+
+// SELECT * FROM movie_and_series JOIN season ON movie_and_series.id_movie = season.id_movie WHERE rate <= 7

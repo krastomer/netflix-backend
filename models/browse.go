@@ -27,3 +27,9 @@ type MovieEpisode struct {
 	Description string `json:"description"`
 	IDSeason    int    `json:"id_season"`
 }
+
+type BrowseMovie struct {
+	History []MovieHistory
+	Top10   []MovieSeq
+	Geners  []PeoplePoster
+}
