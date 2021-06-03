@@ -15,6 +15,7 @@ func MovieHandlers(e *echo.Group) {
 	e.POST("", addMyListMovieHandler)
 	e.DELETE("", removeMyListMovieHandler)
 	e.GET("/episode", getMovieEpisodeHandler)
+	e.POST("/episode", setEpisodeHistoryHandler)
 }
 
 func getMovieDetailHandler(c echo.Context) error {
@@ -87,5 +88,15 @@ func getMovieEpisodeHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, listEpisode)
 }
 
-// TODO: getMovieEpisode
-// TODO: addHistory
+func setEpisodeHistoryHandler(c echo.Context) error {
+	id, _ := strconv.Atoi(c.QueryParam("id"))
+	stop_time := c.QueryParam("stop")
+	_, v := getUserFromToken(c)
+	err := database.SetEpisodeHistory(id, v, stop_time)
+	if err == 0 {
+		return badEpisodeHistoryError
+	}
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "Add History successed",
+	})
+}

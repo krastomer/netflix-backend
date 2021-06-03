@@ -326,3 +326,9 @@ func GetMovieEpisode(id_movie int) []models.MovieEpisode {
 	}
 	return listEpisode
 }
+
+func SetEpisodeHistory(id_episode, id_viewer int, stop_time string) int64 {
+	d := GetDB()
+	err := d.Exec("INSERT INTO `history` ( `id_viewer`, `id_episode`,`stop_time`) VALUES (?, ?, ?)", id_viewer, id_episode, stop_time)
+	return err.RowsAffected
+}

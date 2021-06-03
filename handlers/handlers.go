@@ -16,15 +16,16 @@ const (
 )
 
 var (
-	incorrectEmailError = echo.NewHTTPError(http.StatusBadRequest, "Incorrect email or password")
-	internalServerError = echo.ErrInternalServerError
-	duplicateEmailError = echo.NewHTTPError(http.StatusBadRequest, "Email has registered")
-	paymentInvalidError = echo.NewHTTPError(http.StatusBadRequest, "Payment invalid")
-	userInacitveError   = echo.NewHTTPError(http.StatusUnauthorized, "User Inactive")
-	notFoundMovieError  = echo.NewHTTPError(http.StatusNotFound, "Not found movie or actor related id")
-	maxViewerError      = echo.NewHTTPError(http.StatusBadRequest, "Maximum User Viewer")
-	notFoundViewerError = echo.NewHTTPError(http.StatusNotFound, "Not found viewer")
-	notMyListError      = echo.NewHTTPError(http.StatusBadRequest, "This movie has add or remove to MyList")
+	incorrectEmailError    = echo.NewHTTPError(http.StatusBadRequest, "Incorrect email or password")
+	internalServerError    = echo.ErrInternalServerError
+	duplicateEmailError    = echo.NewHTTPError(http.StatusBadRequest, "Email has registered")
+	paymentInvalidError    = echo.NewHTTPError(http.StatusBadRequest, "Payment invalid")
+	userInacitveError      = echo.NewHTTPError(http.StatusUnauthorized, "User Inactive")
+	notFoundMovieError     = echo.NewHTTPError(http.StatusNotFound, "Not found movie or actor related id")
+	maxViewerError         = echo.NewHTTPError(http.StatusBadRequest, "Maximum User Viewer")
+	notFoundViewerError    = echo.NewHTTPError(http.StatusNotFound, "Not found viewer")
+	notMyListError         = echo.NewHTTPError(http.StatusBadRequest, "This movie has add or remove to MyList")
+	badEpisodeHistoryError = echo.NewHTTPError(http.StatusBadRequest, "Episode can't insert")
 )
 
 func SetHandlers(e *echo.Echo) {
