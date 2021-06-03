@@ -37,7 +37,7 @@ func createViewerHandler(c echo.Context) error {
 		return err
 	}
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": "Create Viewer successed",
+		"message": "Create Viewer succeed",
 	})
 }
 
@@ -57,7 +57,7 @@ func deleteViewerHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": "Delete Viewer successed",
+		"message": "Delete Viewer succeed",
 	})
 
 }

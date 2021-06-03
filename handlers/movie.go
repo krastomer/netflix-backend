@@ -60,7 +60,7 @@ func addMyListMovieHandler(c echo.Context) error {
 		return notMyListError
 	}
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": "Add MyList id_movie: " + strconv.Itoa(id) + " successed",
+		"message": "Add MyList id_movie: " + strconv.Itoa(id) + " succeed",
 	})
 }
 
@@ -75,7 +75,7 @@ func removeMyListMovieHandler(c echo.Context) error {
 		return notMyListError
 	}
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": "Remove MyList id_movie: " + strconv.Itoa(id) + " successed",
+		"message": "Remove MyList id_movie: " + strconv.Itoa(id) + " succeed",
 	})
 }
 
@@ -97,6 +97,6 @@ func setEpisodeHistoryHandler(c echo.Context) error {
 		return badEpisodeHistoryError
 	}
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": "Add History successed",
+		"message": "Add History succeed",
 	})
 }

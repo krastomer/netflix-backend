@@ -46,7 +46,7 @@ func setPaymentHandler(c echo.Context) error {
 		return internalServerError
 	}
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": "Update payment successed",
+		"message": "Update payment succeed",
 	})
 }
 
@@ -66,7 +66,7 @@ func reBillingHandler(c echo.Context) error {
 	defer database.SetReceiptPayment(user)
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"message":     "Re-Billing successed",
+		"message":     "Re-Billing succeed",
 		"next-blling": string(payment.NextBilling),
 	})
 }
@@ -81,6 +81,6 @@ func cancelMemberShipHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": "Cancel Membership successed",
+		"message": "Cancel Membership succeed",
 	})
 }
