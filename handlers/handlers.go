@@ -12,7 +12,7 @@ import (
 
 const (
 	JWT_KEY = "september"
-	EXP_KEY = 72
+	EXP_KEY = 720
 )
 
 var (
