@@ -59,6 +59,7 @@ func SetUserPayment(payment models.UserPayment) error {
 			"card_number":   payment.CardNumber,
 			"exp_date":      payment.ExpDate,
 			"security_code": payment.SecurityCode,
+			"plan_id":       payment.PlanId,
 		})
 	return result.Error
 }
