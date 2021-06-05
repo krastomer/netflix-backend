@@ -342,13 +342,13 @@ func CheckKidsUser(id_viewer int) bool {
 	return is_kid == 1
 }
 
-func GetGenresMovie(id_genres int) []models.PeoplePoster {
+func GetGenresMovie(id_genres int) []models.PeoplePosterGenres {
 	d := GetDB()
-	listMovie := []models.PeoplePoster{}
-	rows, _ := d.Raw("SELECT movie_and_series.id_movie, movie_and_series.name, movie_and_series.poster FROM `genres` JOIN `genres_movie` ON `genres_movie`.`id_genres` = `genres`.`id_genres` JOIN `movie_and_series` ON `movie_and_series`.`id_movie` = `genres_movie`.`id_movie` WHERE genres.id_genres = ? ", id_genres).Rows()
+	listMovie := []models.PeoplePosterGenres{}
+	rows, _ := d.Raw("SELECT genres.name AS genres_name, movie_and_series.id_movie, movie_and_series.name, movie_and_series.poster FROM `genres` JOIN `genres_movie` ON `genres_movie`.`id_genres` = `genres`.`id_genres` JOIN `movie_and_series` ON `movie_and_series`.`id_movie` = `genres_movie`.`id_movie` WHERE genres.id_genres = ? ", id_genres).Rows()
 	for rows.Next() {
-		movie := models.PeoplePoster{}
-		rows.Scan(&movie.ID, &movie.Name, &movie.PosterURL)
+		movie := models.PeoplePosterGenres{}
+		rows.Scan(&movie.GenresName, &movie.ID, &movie.Name, &movie.PosterURL)
 		listMovie = append(listMovie, movie)
 	}
 	return listMovie

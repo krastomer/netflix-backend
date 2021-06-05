@@ -33,6 +33,13 @@ type PeoplePoster struct {
 	PosterURL string `json:"poster_url"`
 }
 
+type PeoplePosterGenres struct {
+	GenresName string `json:"genres_name"`
+	ID         int    `json:"id_movie"`
+	Name       string `json:"name"`
+	PosterURL  string `json:"poster_url"`
+}
+
 func (m *MovieDetail) AddActor(s People) {
 	m.Actors = append(m.Actors, s)
 }
