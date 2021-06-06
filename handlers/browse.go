@@ -16,6 +16,7 @@ func BrowseHandlers(e *echo.Group) {
 	e.GET("/history", getHistoryHandler)
 	e.GET("/top10", getTop10Handler)
 	e.GET("/genres", getGenresBrowseHandler)
+	e.GET("/banner", getBannerMovieHandler)
 }
 
 func getMovieBrowseHandler(c echo.Context) error {
@@ -50,6 +51,12 @@ func getGenresBrowseHandler(c echo.Context) error {
 		return notFoundMovieError
 	}
 	return c.JSON(http.StatusOK, listMovie)
+}
+
+func getBannerMovieHandler(c echo.Context) error {
+	_, v := getUserFromToken(c)
+	movie := database.GetBannerMovie(v)
+	return c.JSON(http.StatusOK, movie)
 }
 
 // TODO: getMovieBrowseHandler

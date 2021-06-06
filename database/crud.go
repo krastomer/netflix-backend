@@ -354,4 +354,14 @@ func GetGenresMovie(id_genres int) []models.PeoplePosterGenres {
 	return listMovie
 }
 
+func GetBannerMovie(idViewer int) models.MovieDetail {
+	d := GetDB()
+	var idMovie int
+	row := d.Raw("SELECT movie_and_series.id_movie FROM `history` JOIN `episode` ON history.id_episode = episode.id_episode JOIN `season` ON `season`.`id_season` = episode.id_season JOIN movie_and_series ON movie_and_series.id_movie = season.id_movie ORDER BY history.id_history DESC LIMIT 1").Row()
+	row.Scan(&idMovie)
+
+	movie := GetMovieDetail(idMovie, idViewer)
+	return movie
+}
+
 // SELECT * FROM movie_and_series JOIN season ON movie_and_series.id_movie = season.id_movie WHERE rate <= 7
