@@ -364,10 +364,10 @@ func GetBannerMovie(idViewer int) models.MovieDetail {
 	return movie
 }
 
-func GetEpisodeURL(idEpisdoe int) string {
+func GetEpisodeURL(idEpisode int) string {
 	d := GetDB()
 	var url string
-	row := d.Raw("SELECT video_url FROM `episode` WHERE id_episode = ?").Row()
+	row := d.Raw("SELECT video_url FROM `episode` WHERE id_episode = ?", idEpisode).Row()
 	row.Scan(&url)
 	return url
 }
