@@ -364,4 +364,12 @@ func GetBannerMovie(idViewer int) models.MovieDetail {
 	return movie
 }
 
+func GetEpisodeURL(idEpisdoe int) string {
+	d := GetDB()
+	var url string
+	row := d.Raw("SELECT video_url FROM `episode` WHERE id_episode = ?").Row()
+	row.Scan(&url)
+	return url
+}
+
 // SELECT * FROM movie_and_series JOIN season ON movie_and_series.id_movie = season.id_movie WHERE rate <= 7

@@ -16,6 +16,7 @@ func MovieHandlers(e *echo.Group) {
 	e.DELETE("", removeMyListMovieHandler)
 	e.GET("/episode", getMovieEpisodeHandler)
 	e.POST("/episode", setEpisodeHistoryHandler)
+	e.GET("/episode/url", getEpisodeURLHandler)
 }
 
 func getMovieDetailHandler(c echo.Context) error {
@@ -98,5 +99,13 @@ func setEpisodeHistoryHandler(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, map[string]string{
 		"message": "Add History succeed",
+	})
+}
+
+func getEpisodeURLHandler(c echo.Context) error {
+	id, _ := strconv.Atoi(c.QueryParam("id"))
+	url := database.GetEpisodeURL(id)
+	return c.JSON(http.StatusOK, map[string]string{
+		"video_url": url,
 	})
 }
