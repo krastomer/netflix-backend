@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -23,7 +22,6 @@ func getMovieDetailHandler(c echo.Context) error {
 	id, _ := strconv.Atoi(c.QueryParam("id"))
 	_, v := getUserFromToken(c)
 	md := database.GetMovieDetail(id, v)
-	fmt.Printf("%v\t%v\t%v\n", md.Name, md.MyList, v)
 	if md.Name == "" {
 		return notFoundMovieError
 	}
